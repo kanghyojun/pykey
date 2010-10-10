@@ -12,5 +12,5 @@ conf = {
   "port": 7777,
   "notice": "pykey :: type (help) more information\n",
   "cmdline": "@> ",
-  "intial_env": get_init_envs()
+  "intial_env": get_init_env()
 }
