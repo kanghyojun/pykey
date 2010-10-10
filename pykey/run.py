@@ -4,6 +4,7 @@ from optparse import OptionParser
 import pykey.config as config
 
 from pykey.server import Server
+from pykey.manage import ClientManager
 
 parser = OptionParser()
 parser.add_option("-p", "--port", type="int", default=config.conf["port"],
@@ -18,6 +19,9 @@ def main():
     sock = sv.get_sock()
     while True:
         conn, addr = sock.accept()
+        #TODO logging Address
+        cm = ClientManager(conn)
+        cm.start()
 
 if __name__ == "__main__":
     main()
