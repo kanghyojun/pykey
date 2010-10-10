@@ -4,8 +4,8 @@
 
 ### Server
 
-you can start server simply with `python -m server.run`,
-for more information type `python -m server.run -h`
+you can start server simply with `python -m pykey.run`,
+for more information type `python -m pykey.run -h`
 
 ### Client
 
