@@ -16,4 +16,7 @@ conf = {
   "initial_env": get_init_env(),
   "error": "Error :: {0}\n".format,
   "get_data": "data -> {0}\n".format,
+  "file": "data.st",
+  "page": 50,
+  "cache_size": 2,
 }

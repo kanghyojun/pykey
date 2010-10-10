@@ -5,7 +5,7 @@
 import types
 from symbol import Symbol
 
-def evaluate(form, env, mem=None):
+def evaluate(form, env, mem=None, keys=None):
     """Bendy evaluatoar evaluate AST(Abstract Syntax Tree)
 
     .. sourcecode:: pycon
@@ -51,6 +51,7 @@ def evaluate(form, env, mem=None):
             args.append(evaluate(arg, env))
 
         args.append(mem)
+        args.append(keys)
         return apply(args[0], args[1:])
 
 def apply(proc, args):
