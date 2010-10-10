@@ -6,6 +6,7 @@ def get_init_env():
     envs['set!'] = pykey.func.set_value 
     envs['get'] = pykey.func.get_value 
     envs['del'] = pykey.func.del_value 
+    envs['logging'] = pykey.func.logging_value
     return envs
 
 conf = {
@@ -19,4 +20,5 @@ conf = {
   "file": "data.st",
   "page": 50,
   "cache_size": 2,
+  "query_size": 1,
 }

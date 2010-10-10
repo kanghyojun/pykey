@@ -15,6 +15,7 @@ class ClientManager(threading.Thread):
     
     store = pykey.memory.Store()
     keys =  pykey.memory.Key()
+    queries = pykey.memory.Query()
     lock = threading.Lock()
 
     def __init__(self, conn):
@@ -46,6 +47,8 @@ class ClientManager(threading.Thread):
                     for k in self.store.data:
                         self.keys.add(k, self.keys.last)
                     self.store.reset()
+                if self.queries.count >= pykey.config.conf["query_size"]:
+                    self.queries.save()
                 self.lock.release()
                
 class FileManager(object):
@@ -60,16 +63,34 @@ class FileManager(object):
                     for k in d:
                         yield k, i 
                     i = i + 1
-                except Exception:
+                except EOFError:
                     break
 
     def read_at(self, point):
         with open(pykey.config.conf["file"], "rb") as f:
             f.seek(point * pykey.config.conf["page"])
             return self.binary_to_object(f.read(pykey.config.conf["page"]))
-    
+
+    def read_all_data(self):
+        with open(pykey.config.conf["file"], "rb") as f:
+            i = 0 
+            while True:
+                try:
+                    f.seek(i * pykey.config.conf["page"])
+                    d = self.binary_to_object(f.read(pykey.config.conf["page"]))
+                    for k, d in d.items():
+                        yield k, d
+                    i = i + 1
+                except EOFError:
+                    break
+
     def write(self, data):
         with open(pykey.config.conf["file"], "ab") as f:
+            f.write(self.fill(self.object_to_binary(data)))
+
+    def write_at(self, data, point):
+        with open(pykey.config.conf["file"], "wb") as f:
+            f.seek(point * pykey.config.conf["page"])
             f.write(self.fill(self.object_to_binary(data)))
 
     def binary_to_object(self, binary):

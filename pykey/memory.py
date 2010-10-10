@@ -1,3 +1,5 @@
+import pykey.manage
+
 class Store(object):
 
     def __new__(cls):
@@ -40,5 +42,36 @@ class Key(object):
     def __getitem__(self, key):
         return self.data[key]
 
+    def __delitem__(self, key):
+        self.last = self.last - 1 if self.last > 0 else 0
+        del self.data[key]
+
+
     def has_key(self, key):
         return self.data.has_key(key)
+
+class Query(object):
+
+    def __new__(cls):
+        if not "_the_instance" in cls.__dict__:
+            cls._the_instance = object.__new__(cls)
+            cls._the_instance.stack = [] 
+            cls._the_instance.count = 0
+        return cls._the_instance
+
+    def add(self, types, key, point):
+        self.count = self.count + 1
+        print self.count
+        self.stack.append({"type": types, "key": key, "point": point})
+
+    def __getitem__(self, index):
+        return self.stack[index]
+
+    def save(self):
+        fm = pykey.manage.FileManager()
+        for s in self.stack:
+            read_data = fm.read_at(s["point"])
+            del read_data[s["key"]]
+            fm.write_at(read_data, s["point"])
+        self.count = 0
+        self.stack = []
