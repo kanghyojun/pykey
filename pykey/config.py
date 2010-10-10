@@ -1,7 +1,8 @@
 import pykey.func
+import pykey.bendy.env
 
 def get_init_env():
-    envs = Environment()
+    envs = pykey.bendy.env.Environment()
     envs['set!'] = pykey.func.set_value 
     envs['get'] = pykey.func.get_value 
     envs['del'] = pykey.func.del_value 
