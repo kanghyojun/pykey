@@ -4,7 +4,7 @@ import pykey.memory
 def set_value(key, value, store, keys):
     store[key] = value
     if keys.has_key(key):
-        pykey.memory.Query().add("set", key, keys[key]["point"])
+        pykey.memory.Query().add("set", key, keys[key]["point"], value)
     return
 
 def get_value(key, store, keys):
@@ -17,9 +17,11 @@ def get_value(key, store, keys):
 
 def del_value(key, store, keys):
     if store.has_key(key):
+        pykey.memory.Query().add("del", key, None, store[key])
         del store[key]
     elif keys.has_key(key):
-        pykey.memory.Query().add("del", key, keys[key]["point"])
+        value = get_value(key, store, keys)
+        pykey.memory.Query().add("del", key, keys[key]["point"], value)
         del keys[key]
     else:
         raise Exception("{0} is nonexistent key".format(key))

@@ -20,5 +20,5 @@ conf = {
   "file": "data.st",
   "page": 50,
   "cache_size": 2,
-  "query_size": 1,
+  "query_size": 5,
 }

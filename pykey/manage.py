@@ -32,6 +32,14 @@ class ClientManager(threading.Thread):
             elif cmd.strip() == "sav!":
                 self.queries.save()
                 self.keys.last = self.keys.check_last()
+            elif cmd.strip() == "query?":
+                for q in self.queries.stack:
+                    self.conn.send("Command> {0} Key> {1} Value> {2}\n".format(
+                      repr(q["type"]), repr(q["key"]), repr(q["value"])
+                    ))
+            elif cmd.strip() == "redo":
+                self.queries.redo(self.store, self.keys)
+                self.keys.last = self.keys.check_last()
             else:
                 token = pykey.bendy.lexer.Lex().tokenize(cmd)
                 parsed = pykey.bendy.parse.Parser().parse(token)

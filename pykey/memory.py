@@ -1,4 +1,5 @@
 import pykey.manage
+import pykey.func
 
 class Store(object):
 
@@ -69,9 +70,10 @@ class Query(object):
             cls._the_instance.count = 0
         return cls._the_instance
 
-    def add(self, types, key, point):
+    def add(self, types, key, point, value):
         self.count = self.count + 1
-        self.stack.append({"type": types, "key": key, "point": point})
+        self.stack.append({"type": types, "key": key,
+                           "point": point, "value": value})
 
     def __getitem__(self, index):
         return self.stack[index]
@@ -84,3 +86,23 @@ class Query(object):
             fm.write_at(read_data, s["point"])
         self.count = 0
         self.stack = []
+
+    def pop(self):
+        return self.stack.pop()
+
+    def redo(self, store, keys):
+        try:
+            data = self.pop()
+        except IndexError:
+            return
+        if data["type"] == "del":
+            if data["point"] is None:
+                store[data["key"]] = data["value"]
+            else:
+                keys.add(data["key"], data["point"])
+        elif data["type"] == "set":
+            if store.has_key(data["key"]):
+                del store[data["key"]]
+            elif keys.has_key(data["key"]):
+                pykey.func.del_value(data["key"], {}, keys)
+                del keys[data["key"]]
