@@ -29,11 +29,12 @@ class Store(object):
 
 class Key(object):
 
+    last = 0
+
     def __new__(cls):
         if not "_the_instance" in cls.__dict__:
             cls._the_instance = object.__new__(cls)
             cls._the_instance.data = {}
-            cls._the_instance.last = 0
         return cls._the_instance
     
     def add(self, key, point):
@@ -46,9 +47,18 @@ class Key(object):
         self.last = self.last - 1 if self.last > 0 else 0
         del self.data[key]
 
-
     def has_key(self, key):
         return self.data.has_key(key)
+
+    def check_last(self):
+        comp = 0
+        for _, d in self.data.items():
+            if comp < d["point"]:
+                comp = d["point"]
+        return comp
+
+    def increase_last(self):
+        self.last = self.last + 1
 
 class Query(object):
 
@@ -61,7 +71,6 @@ class Query(object):
 
     def add(self, types, key, point):
         self.count = self.count + 1
-        print self.count
         self.stack.append({"type": types, "key": key, "point": point})
 
     def __getitem__(self, index):

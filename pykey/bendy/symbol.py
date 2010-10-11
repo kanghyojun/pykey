@@ -14,7 +14,6 @@ class Symbol(object):
     
     """
 
-
     def __init__(self, sym):
         self.sym = sym
 

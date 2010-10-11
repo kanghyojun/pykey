@@ -29,6 +29,9 @@ class ClientManager(threading.Thread):
             cmd = self.conn.recv(2048)
             if cmd.strip() == '':
                 pass
+            elif cmd.strip() == "sav!":
+                self.queries.save()
+                self.keys.last = self.keys.check_last()
             else:
                 token = pykey.bendy.lexer.Lex().tokenize(cmd)
                 parsed = pykey.bendy.parse.Parser().parse(token)
@@ -43,7 +46,7 @@ class ClientManager(threading.Thread):
                     self.conn.send(pykey.config.conf["error"](expt))
                 if self.store.count >= pykey.config.conf["cache_size"]:
                     FileManager().write(self.store.data)
-                    self.keys.last = self.keys.last + 1
+                    self.keys.increase_last()
                     for k in self.store.data:
                         self.keys.add(k, self.keys.last)
                     self.store.reset()
@@ -65,11 +68,21 @@ class FileManager(object):
                     i = i + 1
                 except EOFError:
                     break
+    def read_all_binary_from(self, point):
+        with open(pykey.config.conf["file"], "rb") as f:
+            f.seek(pykey.config.conf["page"] * point)
+            data = f.read()
+        return data
 
     def read_at(self, point):
         with open(pykey.config.conf["file"], "rb") as f:
             f.seek(point * pykey.config.conf["page"])
             return self.binary_to_object(f.read(pykey.config.conf["page"]))
+
+    def read_binary_at(self, point):
+         with open(pykey.config.conf["file"], "rb") as f:
+            f.seek(point * pykey.config.conf["page"])
+            return f.read(pykey.config.conf["page"])
 
     def read_all_data(self):
         with open(pykey.config.conf["file"], "rb") as f:
@@ -89,12 +102,21 @@ class FileManager(object):
             f.write(self.fill(self.object_to_binary(data)))
 
     def write_at(self, data, point):
-        with open(pykey.config.conf["file"], "wb") as f:
-            f.seek(point * pykey.config.conf["page"])
-            f.write(self.fill(self.object_to_binary(data)))
+        buf = StringIO()
+        for p in xrange(0, point):
+            buf.write(self.read_binary_at(p))
+        buf.write(self.fill(self.object_to_binary(data)))
+        buf.write(self.read_all_binary_from(point + 1))
+        adjust = buf.getvalue()
+        buf.close()
+        with open(pykey.config.conf["file"], "w") as f:
+            f.write(adjust)
 
     def binary_to_object(self, binary):
-        return marshal.loads(binary)
+        try:
+            return marshal.loads(binary)
+        except ValueError:
+            return ''
 
     def object_to_binary(self, data):
         return marshal.dumps(data)
@@ -112,3 +134,7 @@ class FileManager(object):
         filled = buf.getvalue()
         buf.close()
         return filled
+
+    def initialize_file(self, name):
+        with open(name, "wb") as f:
+            f.write(self.fill(struct.pack("h", 0)))
