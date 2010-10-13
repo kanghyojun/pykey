@@ -146,3 +146,21 @@ class FileManager(object):
     def initialize_file(self, name):
         with open(name, "wb") as f:
             f.write(self.fill(struct.pack("h", 0)))
+
+    def save_query(self, query):
+        with open(pykey.config.conf["query_file"], "ab") as f:
+            f.write(self.object_to_binary(query))
+
+    def reset_query(self):
+        with open(pykey.config.conf["query_file"], "wb") as f:
+            f.write('')
+
+    def read_query(self):
+        queries = []
+        with open("query.st", "rb") as f:
+            while True:
+                try:
+                    queries.append(marshal.load(f))
+                except EOFError:
+                    break
+        return queries

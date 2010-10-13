@@ -21,4 +21,5 @@ conf = {
   "page": 50,
   "cache_size": 2,
   "query_size": 5,
+  "query_file": "query.st",
 }
