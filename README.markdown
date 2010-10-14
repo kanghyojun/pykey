@@ -10,7 +10,7 @@ for more information type `python -m pykey.run -h`
 ### Client
 
 there is no client in pykey, Instead you can connect server through telnet
-type `$ telnet your-host your-port
+type `$ telnet your-host your-port`
 
 ## developer
 
