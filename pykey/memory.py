@@ -123,14 +123,14 @@ class Cache(object):
 
     def __setitem__(self, key, value):
         self.count = self.count + 1
-        self.data[key] = value
         if self.count >= pykey.config.conf["memcache_size"]:
             pop_size = int(pykey.config.conf["memcache_size"] * (30 / 100.0))
             pop_size = pop_size if pop_size >= 1 else 1
             for k in random.sample(self.data.keys(), pop_size):
                 del self.data[k]
             self.count = self.count - pop_size
-
+        self.data[key] = value
+        
     def __getitem__(self, key):
         return self.data[key]
 
