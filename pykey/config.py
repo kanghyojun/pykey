@@ -22,4 +22,5 @@ conf = {
   "cache_size": 2,
   "query_size": 5,
   "query_file": "query.st",
+  "memcache_size": 5,
 }
