@@ -55,8 +55,9 @@ class ClientManager(threading.Thread):
                 if self.store.count >= pykey.config.conf["cache_size"]:
                     FileManager().write(self.store.data)
                     self.keys.increase_last()
-                    for k in self.store.data:
+                    for k, d in self.store.data.items():
                         self.keys.add(k, self.keys.last)
+                        pykey.memory.Cache()[k] = d 
                     self.store.reset()
                 if self.queries.count >= pykey.config.conf["query_size"]:
                     self.queries.save()
