@@ -20,7 +20,7 @@ def get_value(key, store, keys):
         cache[key] = value
         return value
     else: 
-        raise Exception("{0} is nonexistent key".format(key))
+        raise Exception("{0} is nonexsistent key".format(key))
 
 def del_value(key, store, keys):
     if store.has_key(key):
@@ -32,7 +32,7 @@ def del_value(key, store, keys):
         del pykey.memory.Cache()[key]
         del keys[key]
     else:
-        raise Exception("{0} is nonexistent key".format(key))
+        raise Exception("{0} is nonexsistent key".format(key))
     return
 
 def logging_value(types, store, keys):
