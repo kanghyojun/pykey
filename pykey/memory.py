@@ -33,7 +33,7 @@ class Store(object):
     def save(self):
         FileManager().write(self.data)
         Keys().increase_last()
-        for k, d in self..data.items():
+        for k, d in self.data.items():
             self.keys.add(k, self.keys.last)
             Cache()[k] = d 
         self.reset()
