@@ -31,10 +31,11 @@ class Store(object):
         return self.data.has_key(key)
 
     def save(self):
-        FileManager().write(self.data)
-        Keys().increase_last()
+        pykey.manage.FileManager().write(self.data)
+        keys = Key()
+        keys.increase_last()
         for k, d in self.data.items():
-            self.keys.add(k, self.keys.last)
+            keys.add(k, keys.last)
             Cache()[k] = d 
         self.reset()
 
