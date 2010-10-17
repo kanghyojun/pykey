@@ -30,6 +30,14 @@ class Store(object):
     def has_key(self, key):
         return self.data.has_key(key)
 
+    def save(self):
+        FileManager().write(self.data)
+        Keys().increase_last()
+        for k, d in self..data.items():
+            self.keys.add(k, self.keys.last)
+            Cache()[k] = d 
+        self.reset()
+
 class Key(object):
 
     last = 0

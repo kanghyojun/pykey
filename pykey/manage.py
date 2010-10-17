@@ -31,6 +31,7 @@ class ClientManager(threading.Thread):
                 pass
             elif cmd.strip() == "sav!":
                 self.queries.save()
+                self.store.save()
                 self.keys.last = self.keys.check_last()
             elif cmd.strip() == "query?":
                 for q in self.queries.stack:
