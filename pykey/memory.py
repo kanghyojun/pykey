@@ -85,9 +85,13 @@ class Query(object):
     def save(self):
         fm = pykey.manage.FileManager()
         for s in self.stack:
-            read_data = fm.read_at(s["point"])
-            del read_data[s["key"]]
-            fm.write_at(read_data, s["point"])
+            if s["point"] is not None:
+                read_data = fm.read_at(s["point"])
+                if s["type"] == "set":
+                    read_data[s["key"]] = s["value"]
+                else:
+                    del read_data[s["key"]]
+                fm.write_at(read_data, s["point"])
         self.count = 0
         self.stack = []
         fm.reset_query()

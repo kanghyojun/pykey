@@ -24,7 +24,7 @@ def get_value(key, store, keys):
 
 def del_value(key, store, keys):
     if store.has_key(key):
-        pykey.memory.Query().add("del", key, None, store[key])
+        pykey.memory.Query().add("del", key, None, value)
         del store[key]
     elif keys.has_key(key):
         value = get_value(key, store, keys)
